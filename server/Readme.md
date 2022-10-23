@@ -1,3 +1,3 @@
 **start**
-npm i
+npm i ____
 node index.js
