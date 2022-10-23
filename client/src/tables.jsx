@@ -4,6 +4,7 @@ import Axios from 'axios';
 function Tables() {
     const [filterTable, setFilterTable] = useState([]);
     const [isFilter, setIsFilter] = useState(false);
+    const [searchText, setSearchText] = useState(false);
 
     const [selectedOpt, setSelectedOpt] = useState('name');
     const [selectedOpt2, setSelectedOpt2] = useState('equal');
@@ -27,6 +28,7 @@ function Tables() {
                         totalCountEl.current = res.data.totalCount;
                         tables.current = [...tables.current, ...res.data.data];
                     }
+                    handleSearch();
                 })
                 .catch((e) => {
                     console.log(e);
@@ -75,21 +77,23 @@ function Tables() {
 
     function filter1Change(e) {
         setSelectedOpt(e.target.value);
+        handleSearch();
     }
 
     function filter2Change(e) {
         setSelectedOpt2(e.target.value);
+        handleSearch();
     }
 
     let timeDebounce;
-    function handleChangeFilterText(e) {
+
+    function handleSearch() {
         if (timeDebounce) clearTimeout(timeDebounce);
         timeDebounce = setTimeout(() => {
-            if (!e.target.value || e.target.value.trim() === '') {
+            if (!searchText || searchText.trim() === '') {
                 setFilterTable(tables.current);
                 return;
             }
-            let searchText = e.target.value;
             setFilterTable(
                 tables.current.filter((el) => {
                     switch (selectedOpt) {
@@ -149,12 +153,19 @@ function Tables() {
                         }
 
                         default:
-                            break;
+                            return el;
                     }
-                    return false;
+                    return tables;
                 }),
             );
         }, 300);
+    }
+
+    function handleChangeFilterText(e) {
+        setSearchText(e.target.value);
+        if (e.target.value.length === 0) {
+            setFilterTable(tables.current);
+        }
     }
 
     return (
@@ -195,7 +206,9 @@ function Tables() {
                         <option value="less">меньше</option>
                     </select>
                     <input type="text" onChange={handleChangeFilterText} />
-                    <button type="submit">Поиск</button>
+                    <button type="submit" onClick={handleSearch}>
+                        Поиск
+                    </button>
                 </div>
             </div>
         </div>
