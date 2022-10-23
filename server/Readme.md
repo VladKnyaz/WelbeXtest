@@ -1,3 +1,5 @@
-**start**
-npm i;
-node index.js;
+# download and start
+
+**npm i**
+
+**node index.js;**
